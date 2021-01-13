@@ -10,4 +10,5 @@ module.exports = {
   TV_URL: `${BASE_URL}/home/types/TV%20Series`,
   SEARCH_URL: `${BASE_URL}/search`,
   GENRE_URL: `${BASE_URL}/home/genres`,
+  DETAILS_URL : `${BASE_URL}/watch`
 };

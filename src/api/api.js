@@ -2,6 +2,7 @@ const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 const url = require('./urls');
 const util = require('../utils');
+const axios = require('axios')
 
 
 const search = async(query) =>{
@@ -356,6 +357,44 @@ const animeMovieContentHandler = async(id) =>{
   return await Promise.all(promises);
 };
 
+const getSingleAnimeData = async(id) => {
+  
+    return axios.get(`${url.DETAILS_URL}/${id}`, {withCredentials: false})
+    .then(async function (response) {
+
+        const $ = await cheerio.load(unescape(response.data))
+        
+        let img = $('.animeDetail-top img').attr('src')
+        let title = $('.animeDetail-top .anime-title').text()
+        let synopsis = unescape($('.animeDetail-top .anime-details').text()).trim()
+        let genres = []
+        $('.animeDetail-tags :nth-child(1)').children('a').each((i, el) => {
+            genres.push($(el).text())
+            $(el).remove()
+        })
+
+        $('.animeDetail-tags :nth-child(3) > span').remove()
+        let rating =  $('.animeDetail-tags :nth-child(3)').text().trim()
+
+        $('.animeDetail-tags :nth-child(4) > span').remove()
+        let status = $('.animeDetail-tags :nth-child(4)').text().trim()
+        let type = $('.animeDetail-tags :nth-child(5) > a').text().trim()
+
+        $('.animeDetail-tags :nth-child(6) > span').remove()
+        let firstAired = $('.animeDetail-tags :nth-child(6)').text().trim()
+        let score = $('.animeDetail-top .animeDetailRate-right').text()
+        let episodes = []
+        await $('.ci-contents :nth-child(2) > ul').children('li').each( async (i, el) => {
+            await episodes.push({id : $(el).children('a').attr('href')})
+        })
+
+        let totalEps = episodes.length
+
+        return {episodes, totalEps, score, firstAired, type, status, rating, genres, synopsis, img, title}
+
+    })
+}
+
 //animeMovieContentHandler('watch/kimi-no-na-wa')
 //  .then(d =>{
 //    console.log(d);
@@ -399,5 +438,6 @@ module.exports = {
   ova,
   tv,
   search,
-  genres
+  genres,
+  getSingleAnimeData
 };

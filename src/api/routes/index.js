@@ -101,6 +101,18 @@ router.get('/Search/:query' , (req , res) =>{
     });
 });
 
+router.get('/Anime/:id' , (req , res) =>{
+  const id = req.params.id;
+  api.getSingleAnimeData(id).then(result =>{
+      res.status(200).json({
+        result
+      });
+  }).catch((err) =>{
+    console.error(err);
+  });
+
+});
+
 // Total pages unknown.
 router.get('/Genres/:genre/:page' , (req , res) =>{
   const genre = req.params.genre;
