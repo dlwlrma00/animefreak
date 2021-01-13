@@ -368,7 +368,7 @@ const animeMovieContentHandler = async(id) =>{
 const getSingleAnimeData = async(id) => {
 
     return animeContentHandler(`watch/${id}`).then(result => {
-      return result
+      return {...result}
     })
     // return axios.get(`${url.DETAILS_URL}/${id}`, {withCredentials: false})
     // .then(async function (response) {
