@@ -876,3 +876,85 @@ _*Chris Michael*_
 ---
 
 Copyright © 2019 [Chris Michael](http://personal-porfolio.chrismichael.now.sh).
+
+
+## api.getSingleAnimeData([query])
+---
+```json
+// http://localhost:5000/api/v1/Anime/one-punch-man
+
+{
+  "episodes": [
+    {
+      "id": "https://www.animefreak.tv/watch/one-punch-man/episode/special-5"
+    },
+    {
+      "id": "https://www.animefreak.tv/watch/one-punch-man/episode/special-4"
+    },
+    {
+      "id": "https://www.animefreak.tv/watch/one-punch-man/episode/special-3"
+    },
+    {
+      "id": "https://www.animefreak.tv/watch/one-punch-man/episode/special-2"
+    },
+    {
+      "id": "https://www.animefreak.tv/watch/one-punch-man/episode/special-1"
+    },
+    {
+      "id": "https://www.animefreak.tv/watch/one-punch-man/episode/episode-12"
+    },
+    {
+      "id": "https://www.animefreak.tv/watch/one-punch-man/episode/episode-11"
+    },
+    {
+      "id": "https://www.animefreak.tv/watch/one-punch-man/episode/episode-10"
+    },
+    {
+      "id": "https://www.animefreak.tv/watch/one-punch-man/episode/episode-9"
+    },
+    {
+      "id": "https://www.animefreak.tv/watch/one-punch-man/episode/episode-8"
+    },
+    {
+      "id": "https://www.animefreak.tv/watch/one-punch-man/episode/episode-7"
+    },
+    {
+      "id": "https://www.animefreak.tv/watch/one-punch-man/episode/episode-6"
+    },
+    {
+      "id": "https://www.animefreak.tv/watch/one-punch-man/episode/episode-5"
+    },
+    {
+      "id": "https://www.animefreak.tv/watch/one-punch-man/episode/episode-4"
+    },
+    {
+      "id": "https://www.animefreak.tv/watch/one-punch-man/episode/episode-3"
+    },
+    {
+      "id": "https://www.animefreak.tv/watch/one-punch-man/episode/episode-2"
+    },
+    {
+      "id": "https://www.animefreak.tv/watch/one-punch-man/episode/episode-1"
+    }
+  ],
+  "totalEps": 17,
+  "score": 9.17,
+  "firstAired": "Sep 07, 2015",
+  "type": "TV Series",
+  "status": "Finished",
+  "rating": "Everyone",
+  "genres": [
+    "Comedy",
+    "Seinen",
+    "Action",
+    "Parody",
+    "Sci-Fi",
+    "Super Power",
+    "Supernatural"
+  ],
+  "synopsis": "In this new action-comedy, everything about a young man named Saitama screams \"AVERAGE,\" from his lifeless expression, to his bald head, to his unimpressive physique. However, this average-looking fellow doesn't have your average problem... He's actually a superhero that's looking for tough opponents! The problem is, every time he finds a promising candidate he beats the snot out of them in one punch. Can Saitama finally find an evil villain strong enough to challenge him? Follow Saitama through his hilarious romps as he searches for new bad guys to challenge!",
+  "img": "https://www.animefreak.tv/meta/anime/7539/one-punch-man.jpg",
+  "title": "One Punch Man"
+}
+```
+

@@ -382,7 +382,7 @@ const getSingleAnimeData = async(id) => {
 
         $('.animeDetail-tags :nth-child(6) > span').remove()
         let firstAired = $('.animeDetail-tags :nth-child(6)').text().trim()
-        let score = $('.animeDetail-top .animeDetailRate-right').text()
+        let score = parseInt($('.animeDetail-top .animeDetailRate-right').text().trim())
         let episodes = []
         await $('.ci-contents :nth-child(2) > ul').children('li').each( async (i, el) => {
             await episodes.push({id : $(el).children('a').attr('href')})
