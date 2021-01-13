@@ -185,7 +185,13 @@ const latestEpisodes = async(page) =>{
     const title = $element.find('div.name a').text().split('-')[0].trim();
     const episodePublished = $element.find('div.time').text();
     const episode = parseInt($element.find('div.name a').text().split('\n')[1].match(/\d+/) , 10);
+    let video = []
+    video.push(animeVideoHandler(id).then(extra => (
+      video = extra[0] //{source: extra[0] ? extra[0] : null,}
+    )))
+
     promises.push(animeContentHandler(contentId).then(extra => ({
+      id : contentId.replace('watch/', ''),
       title: title ? title : null,
       episode: episode ? episode : null,
       episodePublished: episodePublished ? episodePublished: null,
@@ -195,10 +201,11 @@ const latestEpisodes = async(page) =>{
       score: extra[0] ? extra[0].score : null,
       totalEps: extra[0] ? extra[0].totalEps : null,
       episodes: extra[0] ? extra[0].episodes : null,
+      video : video
     })));
-    promises.push(animeVideoHandler(id).then(extra => ({
-      video: extra[0] ? extra[0] : null,
-    })));
+    // promises.push(animeVideoHandler(id).then(extra => ({
+    //   video: extra[0] ? extra[0] : null,
+    // })));
   });
   return await Promise.all(promises)
 };
@@ -222,6 +229,7 @@ const popular = async() =>{
     //});
     const synopsis = $element.find('div.wab-right div.wab-desc').text().trim();
     promises.push(animeContentHandler(id).then(extra => ({
+      id : id.replace('watch/', ''),
       title: title ? title : null,
       img: extra[0] ? extra[0].img : null,
       genres: extra[0] ? extra[0].genres : null,
@@ -232,7 +240,7 @@ const popular = async() =>{
       firstAired: extra[0] ? String(extra[0].firstAired).trim() : null,
       score: extra[0] ? extra[0].score : null,
       totalEps: extra[0] ? extra[0].totalEps : null,
-      episodes: extra[0] ? extra[0].episodes : null,
+      // episodes: extra[0] ? extra[0].episodes : null,
     })));
   });
   return await Promise.all(promises);
