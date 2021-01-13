@@ -200,7 +200,7 @@ const latestEpisodes = async(page) =>{
       firstAired: extra[0] ? String(extra[0].firstAired).trim() : null,
       score: extra[0] ? extra[0].score : null,
       totalEps: extra[0] ? extra[0].totalEps : null,
-      episodes: extra[0] ? extra[0].episodes : null,
+      // episodes: extra[0] ? extra[0].episodes : null,
       video : video
     })));
     // promises.push(animeVideoHandler(id).then(extra => ({
