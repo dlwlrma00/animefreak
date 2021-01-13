@@ -366,6 +366,10 @@ const animeMovieContentHandler = async(id) =>{
 };
 
 const getSingleAnimeData = async(id) => {
+
+  // return animeContentHandler(`watch/${id}`).then(result => {
+  //   return result
+  // })
   
     return axios.get(`${url.DETAILS_URL}/${id}`, {withCredentials: false})
     .then(async function (response) {
@@ -376,13 +380,31 @@ const getSingleAnimeData = async(id) => {
         let title = $('.animeDetail-top .anime-title').text()
         let synopsis = unescape($('.animeDetail-top .anime-details').text()).trim()
         let genres = []
-        $('.animeDetail-tags :nth-child(1)').children('a').each((i, el) => {
-            genres.push($(el).text())
-            $(el).remove()
+        let rating = null
+        // $('.animeDetail-tags :nth-child(1)').children('a').each((i, el) => {
+        //     genres.push($(el).text())
+        //     $(el).remove()
+        // })
+
+        $('div.main div.container').each((index , element) =>{
+          const $element = $(element);
+          $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(1).find('a.blueColor').each((j , el) =>{
+            const $el = $(el);
+            const genre = $el.attr('href').split('/')[5];
+            genres.push(genre);
+          });
+          if(typeof genres[0] === 'undefined'){
+            $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(0).find('a.blueColor').each((j , el) =>{
+              const $el = $(el);
+              const genre = $el.attr('href').split('/')[5];
+              genres.push(genre);
+            });
+          }
+          rating = $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(3).text().split(':')[1].trim();
         })
 
-        $('.animeDetail-tags :nth-child(3) > span').remove()
-        let rating =  $('.animeDetail-tags :nth-child(3)').text().trim()
+        // $('.animeDetail-tags :nth-child(3) > span').remove()
+        // let rating =  $('.animeDetail-tags :nth-child(3)').text().trim()
 
         $('.animeDetail-tags :nth-child(4) > span').remove()
         let status = $('.animeDetail-tags :nth-child(4)').text().trim()
