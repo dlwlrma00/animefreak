@@ -396,6 +396,12 @@ const getSingleAnimeData = async(id) => {
             await episodes.push({id : $(el).children('a').attr('href')})
         })
 
+        if(episodes.length <= 0){
+          await $('.ci-contents :nth-child(1) > ul').children('li').each( async (i, el) => {
+              await episodes.push({id : $(el).children('a').attr('href')})
+          })
+        }
+
         let totalEps = episodes.length
 
         return {episodes, totalEps, score, firstAired, type, status, rating, genres, synopsis, img, title}
