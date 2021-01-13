@@ -391,13 +391,19 @@ const getSingleAnimeData = async(id) => {
           $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(1).find('a.blueColor').each((j , el) =>{
             const $el = $(el);
             const genre = $el.attr('href').split('/')[5];
-            genres.push(genre);
+            if(genre){
+              genres.push(genre);
+            }
           });
+          
           if(typeof genres[0] === 'undefined'){
             $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(0).find('a.blueColor').each((j , el) =>{
               const $el = $(el);
               const genre = $el.attr('href').split('/')[5];
-              genres.push(genre);
+              if(genre){
+                genres.push(genre);
+              }
+              
             });
           }
           rating = $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(3).text().split(':')[1].trim();
