@@ -367,63 +367,66 @@ const animeMovieContentHandler = async(id) =>{
 
 const getSingleAnimeData = async(id) => {
 
-    return axios.get(`${url.DETAILS_URL}/${id}`, {withCredentials: false})
-    .then(async function (response) {
-
-        const $ = await cheerio.load(unescape(response.data))
-        
-        let img = $('.animeDetail-top img').attr('src')
-        let title = $('.animeDetail-top .anime-title').text()
-        let synopsis = unescape($('.animeDetail-top .anime-details').text()).trim()
-        let genres = []
-        let rating = null
-
-        $('div.main div.container').each((index , element) =>{
-          const $element = $(element);
-          $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(1).find('a.blueColor').each((j , el) =>{
-            const $el = $(el);
-            const genre = $el.attr('href').split('/')[5];
-            if(genre){
-              genres.push(genre);
-            }
-          });
-
-          if(typeof genres[0] === 'undefined'){
-            $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(0).find('a.blueColor').each((j , el) =>{
-              const $el = $(el);
-              const genre = $el.attr('href').split('/')[5];
-              if(genre){
-                genres.push(genre);
-              }
-              
-            });
-          }
-          rating = $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(3).text().split(':')[1].trim();
-        })
-
-        $('.animeDetail-tags :nth-child(4) > span').remove()
-        let status = $('.animeDetail-tags :nth-child(4)').text().trim()
-        let type = $('.animeDetail-tags :nth-child(5) > a').text().trim()
-
-        $('.animeDetail-tags :nth-child(6) > span').remove()
-        let firstAired = $('.animeDetail-tags :nth-child(6)').text().trim()
-        let score = parseInt($('.animeDetail-top .animeDetailRate-right').text().trim())
-        let episodes = []
-        await $('.ci-contents :nth-child(2) > ul').children('li').each( async (i, el) => {
-            await episodes.push({id : $(el).children('a').attr('href').split('/')[4]})
-        })
-
-        if(episodes.length <= 0){
-          await $('.ci-contents :nth-child(1) > ul').children('li').each( async (i, el) => {
-              await episodes.push({id : $(el).children('a').attr('href').split('/')[4]})
-          })
-        }
-
-        let totalEps = episodes.length
-
-        return {episodes, totalEps, score, firstAired, type, status, rating, genres, synopsis, img, title}
-
+    return animeContentHandler(`watch/${id}`).then(result => {
+      return result
     })
+    // return axios.get(`${url.DETAILS_URL}/${id}`, {withCredentials: false})
+    // .then(async function (response) {
+
+    //     const $ = await cheerio.load(unescape(response.data))
+        
+    //     let img = $('.animeDetail-top img').attr('src')
+    //     let title = $('.animeDetail-top .anime-title').text()
+    //     let synopsis = unescape($('.animeDetail-top .anime-details').text()).trim()
+    //     let genres = []
+    //     let rating = null
+
+    //     $('div.main div.container').each((index , element) =>{
+    //       const $element = $(element);
+    //       $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(1).find('a.blueColor').each((j , el) =>{
+    //         const $el = $(el);
+    //         const genre = $el.attr('href').split('/')[5];
+    //         if(genre){
+    //           genres.push(genre);
+    //         }
+    //       });
+
+    //       if(typeof genres[0] === 'undefined'){
+    //         $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(0).find('a.blueColor').each((j , el) =>{
+    //           const $el = $(el);
+    //           const genre = $el.attr('href').split('/')[5];
+    //           if(genre){
+    //             genres.push(genre);
+    //           }
+              
+    //         });
+    //       }
+    //       rating = $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(3).text().split(':')[1].trim();
+    //     })
+
+    //     $('.animeDetail-tags :nth-child(4) > span').remove()
+    //     let status = $('.animeDetail-tags :nth-child(4)').text().trim()
+    //     let type = $('.animeDetail-tags :nth-child(5) > a').text().trim()
+
+    //     $('.animeDetail-tags :nth-child(6) > span').remove()
+    //     let firstAired = $('.animeDetail-tags :nth-child(6)').text().trim()
+    //     let score = parseInt($('.animeDetail-top .animeDetailRate-right').text().trim())
+    //     let episodes = []
+    //     await $('.ci-contents :nth-child(2) > ul').children('li').each( async (i, el) => {
+    //         await episodes.push({id : $(el).children('a').attr('href').split('/')[4]})
+    //     })
+
+    //     if(episodes.length <= 0){
+    //       await $('.ci-contents :nth-child(1) > ul').children('li').each( async (i, el) => {
+    //           await episodes.push({id : $(el).children('a').attr('href').split('/')[4]})
+    //       })
+    //     }
+
+    //     let totalEps = episodes.length
+
+    //     return {episodes, totalEps, score, firstAired, type, status, rating, genres, synopsis, img, title}
+
+    // })
 }
 
 //animeMovieContentHandler('watch/kimi-no-na-wa')
