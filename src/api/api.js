@@ -400,7 +400,7 @@ const getSingleAnimeData = async(id) => {
           }
           rating = $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(3).text().split(':')[1].trim();
         })
-        
+
         $('.animeDetail-tags :nth-child(4) > span').remove()
         let status = $('.animeDetail-tags :nth-child(4)').text().trim()
         let type = $('.animeDetail-tags :nth-child(5) > a').text().trim()
@@ -410,7 +410,7 @@ const getSingleAnimeData = async(id) => {
         let score = parseInt($('.animeDetail-top .animeDetailRate-right').text().trim())
         let episodes = []
         await $('.ci-contents :nth-child(2) > ul').children('li').each( async (i, el) => {
-            await episodes.push({id : $(el).children('a').attr('href')})
+            await episodes.push({id : $(el).children('a').attr('href').split('/')[4]})
         })
 
         if(episodes.length <= 0){
