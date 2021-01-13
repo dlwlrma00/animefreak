@@ -878,7 +878,7 @@ _*Chris Michael*_
 Copyright © 2019 [Chris Michael](http://personal-porfolio.chrismichael.now.sh).
 
 
-## api.getSingleAnimeData([query])
+## api.getSingleAnimeData([id])
 ---
 ```json
 // http://localhost:5000/api/v1/Anime/one-punch-man
