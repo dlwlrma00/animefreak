@@ -186,6 +186,7 @@ const latestEpisodes = async(page) =>{
     const episodePublished = $element.find('div.time').text();
     const episode = parseInt($element.find('div.name a').text().split('\n')[1].match(/\d+/) , 10);
     promises.push(animeContentHandler(contentId).then(extra => ({
+      id : id ? id : null,
       title: title ? title : null,
       episode: episode ? episode : null,
       episodePublished: episodePublished ? episodePublished: null,
