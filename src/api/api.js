@@ -362,7 +362,7 @@ const animeMovieContentHandler = async(id) =>{
   $('div.main div.container').each((index , element) =>{
     const $element = $(element);
     const animeId = $element.find('div.container-left div.container-item div.ci-contents div.ci-ct ul.check-list li a').attr('href').slice(32);
-    promises.push(animeVideoHandlerv2(animeId).then(extra => ({
+    promises.push(animeVideoHandler(animeId).then(extra => ({
       video: extra[0] ? extra[0] : null,
     })));
   });
