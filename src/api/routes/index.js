@@ -42,16 +42,9 @@ router.get('/LatestEpisodes/:page' , (req , res) =>{
   const page = req.params.page;
   api.latestEpisodes(page)
     .then(async result =>{
-
-        let anime = []
-        await result.filter(function(data, index, array) {
-            if(index % 2 === 0){
-              anime.push({data, video: result[index + 1].video})
-            }
-        });
-
+      
         res.status(200).json({
-          result : anime
+          result 
         });
 
     }).catch((err) =>{

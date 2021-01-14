@@ -172,38 +172,6 @@ const movies = async(page) =>{
   return await Promise.all(promises);
 };
 
-const latestEpisodes = async(page) =>{
-  const res = await fetch(`${url.LATEST_EPS_URL}/page/${page}`);
-  const body = await res.text();
-  const $ = cheerio.load(body);
-  const promises = [];
-
-  $('div.container div.container-item div.date-list div.dl-item').each((index , element) =>{
-    const $element = $(element);
-    const id = $element.find('div.name a').attr('href').slice(32);
-    const contentId = 'watch/' + $element.find('div.name a').attr('href').split('/')[4];
-    const title = $element.find('div.name a').text().split('-')[0].trim();
-    const episodePublished = $element.find('div.time').text();
-    const episode = parseInt($element.find('div.name a').text().split('\n')[1].match(/\d+/) , 10);
-    promises.push(animeContentHandler(contentId).then(extra => ({
-      id : id ? id : null,
-      title: title ? title : null,
-      episode: episode ? episode : null,
-      episodePublished: episodePublished ? episodePublished: null,
-      img: extra[0] ? extra[0].img : null,
-      type: extra[0] ? extra[0].type : null,
-      firstAired: extra[0] ? String(extra[0].firstAired).trim() : null,
-      score: extra[0] ? extra[0].score : null,
-      totalEps: extra[0] ? extra[0].totalEps : null,
-      // episodes: extra[0] ? extra[0].episodes : null,
-    })));
-    promises.push(animeVideoHandler(id).then(extra => ({
-      video: extra[0] ? extra[0] : null
-    })));
-  });
-  return await Promise.all(promises)
-};
-
 const popular = async() =>{
   const res = await fetch(`${url.POPULAR_URL}`);
   const body = await res.text();
@@ -448,6 +416,54 @@ const getSingleAnimeData = async(id) => {
     })
 }
 
+const getLatestHandler = async(page) =>{
+  const res = await fetch(`${url.LATEST_EPS_URL}/page/${page}`);
+  const body = await res.text();
+  const $ = cheerio.load(body);
+  const promises = [];
+
+  $('div.container div.container-item div.date-list div.dl-item').each((index , element) =>{
+    const $element = $(element);
+    const id = $element.find('div.name a').attr('href').slice(32);
+    const contentId = 'watch/' + $element.find('div.name a').attr('href').split('/')[4];
+    const title = $element.find('div.name a').text().split('-')[0].trim();
+    const episodePublished = $element.find('div.time').text();
+    const episode = parseInt($element.find('div.name a').text().split('\n')[1].match(/\d+/) , 10);
+    promises.push(animeContentHandler(contentId).then(extra => ({
+      id : id ? id : null,
+      title: title ? title : null,
+      episode: episode ? episode : null,
+      episodePublished: episodePublished ? episodePublished: null,
+      img: extra[0] ? extra[0].img : null,
+      type: extra[0] ? extra[0].type : null,
+      firstAired: extra[0] ? String(extra[0].firstAired).trim() : null,
+      score: extra[0] ? extra[0].score : null,
+      totalEps: extra[0] ? extra[0].totalEps : null,
+      // episodes: extra[0] ? extra[0].episodes : null,
+    })));
+    promises.push(animeVideoHandler(id).then(extra => ({
+      video: extra[0] ? extra[0] : null
+    })));
+  });
+  return await Promise.all(promises)
+};
+
+const latestEpisodes = async(page) => {
+
+  return getLatestHandler(page).then(async result => {
+
+        let anime = []
+        await result.filter(function(data, index, array) {
+            if(index % 2 === 0){
+              anime.push({data, video: result[index + 1].video})
+            }
+        });
+
+        return anime
+
+  })
+}
+
 //animeMovieContentHandler('watch/kimi-no-na-wa')
 //  .then(d =>{
 //    console.log(d);
@@ -492,5 +508,5 @@ module.exports = {
   tv,
   search,
   genres,
-  getSingleAnimeData
+  getSingleAnimeData,
 };
