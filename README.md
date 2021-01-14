@@ -1,4 +1,4 @@
-# **:triangular_flag_on_post: ANIMEFREAK API** (version 1.0.8 (stable))
+# **:triangular_flag_on_post: ANIMEFREAK API** (version 1.0.9 [stable])
 
 ![node version](https://img.shields.io/badge/node->=10.16.x-brightgreen.svg)
 ![npm version](https://img.shields.io/badge/npm->=6.9.x-brightgreen.svg)

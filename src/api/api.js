@@ -186,18 +186,18 @@ const axios = require('axios')
 const search = async(query) =>{
   const res = await fetch(`${url.SEARCH_URL}/topSearch?q=${query}`);
   const body = await res.json();
-  const $ = cheerio.load(body);
   const promises = [];
 
   body.data.map(doc =>{
     const id = `watch/${doc.seo_name}`;
     const title = doc.name;
+
     promises.push(animeContentHandlerv2(id).then(extra => ({
       id : id ? id.replace('watch/', '') : null,
       title: title ? title : null,
       img: extra[0] ? extra[0].img : null,
-      //genres: genres ? genres : null,
-      //synopsis: synopsis ? synopsis : null,
+      genres: genres ? genres : null,
+      synopsis: synopsis ? synopsis : null,
       rating: extra[0] ? extra[0].rating : null,
       status: extra[0] ? extra[0].status : null,
       type: extra[0] ? extra[0].type : null,
@@ -206,7 +206,9 @@ const search = async(query) =>{
       totalEps: extra[0] ? extra[0].totalEps : null,
       // episodes: extra[0] ? extra[0].episodes : null,
     })));
+
   });
+
   return await Promise.all(promises)
 };
 
