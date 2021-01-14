@@ -7,74 +7,6 @@ const axios = require('axios')
 
 // --------- HANDLER -----------//
 
-  const animeContentHandler = async(id) =>{
-    const res = await fetch(`${url.BASE_URL}/${id}`);
-    const body = await res.text();
-    const $ = cheerio.load(body);
-    const promises = [];
-
-    $('div.main div.container').each((index , element) =>{
-      const $element = $(element);
-      const genres = [];
-      $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(1).find('a.blueColor').each((j , el) =>{
-        const $el = $(el);
-        const genre = $el.attr('href').split('/')[5];
-        genres.push(genre);
-      });
-      if(typeof genres[0] === 'undefined'){
-        $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(0).find('a.blueColor').each((j , el) =>{
-          const $el = $(el);
-          const genre = $el.attr('href').split('/')[5];
-          genres.push(genre);
-        });
-      }
-      const tempGenres = genres.filter(x => !!x);
-      const img = $element.find('div.animeDetail-top div.animeDetail-image img').attr('src');
-      const rating = $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(3).text().split(':')[1].trim();
-      const status = $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(4).text().split(':')[1].trim();
-      const type = $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(5).text().split(':')[1].trim();
-      const firstAired = $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(6).text().split(':')[1];
-      const score = parseFloat($element.find('div.animeDetail-top div.animeDetailRate div.animeDetailRate-right').text().trim());
-      let totalEps = parseInt($element.find('div.container-left div.container-item div.ci-contents div.ci-ct ul.check-list li a')
-        .eq(0).attr('href').split('/')[6].split('-')[1], 
-        10
-      );
-      try{
-        if(totalEps !== totalEps){
-          totalEps = parseInt($element.find('div.container-left div.container-item div.ci-contents div.ci-ct ul.check-list li a')
-            .eq(1).attr('href').split('/')[6].split('-')[1],
-            10
-          );
-        }
-      }catch(error){
-        console.log(error);
-      }
-      const animeId = $element.find('div.container-left div.container-item div.ci-contents div.ci-ct ul.check-list li a')
-        .eq(0).attr('href').split('/')[4];
-      let episodes = Array.from({length: totalEps} , (v , k) =>{
-        return{
-          //${url.BASE_URL}/watch/${id}
-          id: `${animeId}/episode/episode-${k + 1}`
-        }
-      });
-      //if(util.isEmpty(episodes) && totalEps !== totalEps){
-      //  episodes.push(animeId)
-      //}
-      promises.push({
-        img: img,
-        genres: tempGenres,
-        rating: rating,
-        status: status,
-        type: type,
-        firstAired: firstAired,
-        score: score,
-        totalEps: totalEps,
-        episodes: episodes,
-      });
-    });
-    return await Promise.all(promises);
-  };
-
   // MOST ACCURATE & BYPASS ERROR WHEN UNDEFINED
   const animeContentHandlerv2 = async(id) =>{
     const res = await fetch(`${url.BASE_URL}/${id}`);
@@ -112,6 +44,8 @@ const axios = require('axios')
       let first_aired_elem = $('span:contains("First Aired :")').parent().text();
       const firstAired = first_aired_elem ? first_aired_elem.split(':')[1] : null;
 
+      let synopsis = unescape($('.animeDetail-top .anime-details').text()).trim()
+
       const score = parseFloat($element.find('div.animeDetail-top div.animeDetailRate div.animeDetailRate-right').text().trim());
       
       let total_eps_el = $element.find('div.container-left div.container-item div.ci-contents div.ci-ct ul.check-list li a').eq(0).attr('href');
@@ -138,6 +72,7 @@ const axios = require('axios')
 
       promises.push({
         img: img,
+        synopsis : synopsis,
         genres: tempGenres,
         rating: rating,
         status: status,
@@ -196,8 +131,8 @@ const search = async(query) =>{
       id : id ? id.replace('watch/', '') : null,
       title: title ? title : null,
       img: extra[0] ? extra[0].img : null,
-      genres: genres ? genres : null,
-      synopsis: synopsis ? synopsis : null,
+      genres: extra[0] ? extra[0].genres : null,
+      synopsis: extra[0] ? extra[0].synopsis : null,
       rating: extra[0] ? extra[0].rating : null,
       status: extra[0] ? extra[0].status : null,
       type: extra[0] ? extra[0].type : null,
@@ -205,6 +140,7 @@ const search = async(query) =>{
       score: extra[0] ? extra[0].score : null,
       totalEps: extra[0] ? extra[0].totalEps : null,
       // episodes: extra[0] ? extra[0].episodes : null,
+
     })));
 
   });
