@@ -23,6 +23,9 @@
 
 ---
 
+## :tada: Updates in version v1.0.9 (stable) :tada:
+ - [x] Fix bugs
+
 ## :tada: Updates in version v1.0.6 :tada:
  - [x] Added api.getSingleAnimeData(id)
  - [x] Enhance crawling algo
