@@ -41,18 +41,19 @@ router.get('/Popular' , (req , res) =>{
 router.get('/LatestEpisodes/:page' , (req , res) =>{
   const page = req.params.page;
   api.latestEpisodes(page)
-    .then(async result =>{
+    .then(async anime =>{
 
-        let anime = []
+        let result = []
         await anime.filter(function(data, index, array) {
             if(index % 2 === 0){
-              anime.push({data, video: result[index + 1].video})
+              result.push({data, video: anime[index + 1].video})
             }
         });
 
         res.status(200).json({
-          anime
+          result
         });
+
     }).catch((err) =>{
       console.error(err);
     });
