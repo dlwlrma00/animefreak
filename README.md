@@ -1,4 +1,4 @@
-# **:triangular_flag_on_post: ANIMEFREAK API** (version 1.0.2)
+# **:triangular_flag_on_post: ANIMEFREAK API** (version 1.0.6)
 
 ![node version](https://img.shields.io/badge/node->=10.16.x-brightgreen.svg)
 ![npm version](https://img.shields.io/badge/npm->=6.9.x-brightgreen.svg)
@@ -23,6 +23,10 @@
 
 ---
 
+## :tada: Updates in version v1.0.6 :tada:
+ - [x] Added api.getSingleAnimeData(id)
+ - [x] Enhance crawling algo
+ - [x] Fix reponse format on api.movies() & api.latestEpisodes()
 
 ## :tada: Updates in version v1.0.4 :tada:
  - [x] Technique used by the animefreak page to obtain the real src of the mp4. Therefore, most src should now work and reproduce correctly.
@@ -344,17 +348,17 @@ api.animeVideoHandler('tokyo-ghoul/episode/episode-12')
         "id": "abciee-shuugyou-nikki/episode/episode-2",
         "title": "Abciee Shuugyou Nikki",
         "episode": 2,
-        "episodePublished": "7 hours ago",
+        "episodePublished": "11 hours ago",
         "img": "https://www.animefreak.tv/meta/anime/8643/abciee-shuugyou-nikki.jpg",
-        "type": "Jan 13, 2021",
-        "firstAired": "undefined",
+        "type": "TV Series",
+        "firstAired": "Jan 13, 2021",
         "score": 0,
         "totalEps": 2
       },
       "video": {
-        "mp4": "https://st9.anime1.com/[SubsPlease] Abciee Shuugyou Nikki - 02 (720p) [4574ACB6]_af.mp4?st=eatliWNAT8vDV8XFHPjxgw&e=1610613177"
+        "mp4": "https://st11.anime1.com/[SubsPlease] Abciee Shuugyou Nikki - 02 (720p) [4574ACB6]_af.mp4?st=f0liQ6NdVgvFStN50viB5A&e=1610628314"
       }
-    }
+    },
   ]
 }
 ```
@@ -372,24 +376,24 @@ api.animeVideoHandler('tokyo-ghoul/episode/episode-12')
 {
   "movies": [
     {
-      "title": "Kimi no Na wa.",
-      "img": "https://www.animefreak.tv/meta/anime/5959/kimi-no-na-wa.jpg",
-      "genres": [
-        "school",
-        "drama",
-        "romance",
-        "supernatural"
-      ],
-      "synopsis": "Description: The story is set one month after a comet has fallen for the first time in a thousand years in Japan. Mitsuha, a high school girl living in the countryside, wants to live in the city because she is tired of life in the country. Then, there's Taki. He's a high school student living in Tokyo with his friends while working as a part-timer at an Italian restaurant. He also has a strong interest in fine arts involving architecture. One day, Mitsuha dreams of herself as a young man. On the other hand, Taki also has a dream where he is a female student attending high school in the countryside. What's the secret behind their dreams?",
-      "rating": "Teen +13",
-      "status": "Finished",
-      "type": "Movie",
-      "firstAired": "Sep 08, 2016",
-      "score": 9.54
-    },
-    {
+      "data": {
+        "title": "Kimi no Na wa.",
+        "img": "https://www.animefreak.tv/meta/anime/5959/kimi-no-na-wa.jpg",
+        "genres": [
+          "school",
+          "drama",
+          "romance",
+          "supernatural"
+        ],
+        "synopsis": "Description: The story is set one month after a comet has fallen for the first time in a thousand years in Japan. Mitsuha, a high school girl living in the countryside, wants to live in the city because she is tired of life in the country. Then, there's Taki. He's a high school student living in Tokyo with his friends while working as a part-timer at an Italian restaurant. He also has a strong interest in fine arts involving architecture. One day, Mitsuha dreams of herself as a young man. On the other hand, Taki also has a dream where he is a female student attending high school in the countryside. What's the secret behind their dreams?",
+        "rating": "Teen +13",
+        "status": "Finished",
+        "type": "Movie",
+        "firstAired": "Sep 08, 2016",
+        "score": 9.3
+      },
       "video": {
-        "mp4": "http://st2.anime1.com/Kimi no Na wa.mp4?st=TqbDTTWDVCeLgdqp1bh2iQ&e=1575927001"
+        "mp4": "https://st6.anime1.com/Kimi no Na wa.mp4?st=xO4lO73hTcm8ngD126NF3Q&e=1610628107"
       }
     },
   ]
@@ -697,7 +701,7 @@ Updated By - [Rex Tan](https://github.com/dlwlrma00) 🦄🦄🦄🦄🦄
     "firstAired": "Jan 13, 2021",
     "type": "TV Series",
     "status": "Ongoing",
-    "rating": "Ongoing",
+    "rating": "Everyone",
     "genres": [
       "comedy"
     ],
