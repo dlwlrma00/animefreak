@@ -204,7 +204,7 @@ const search = async(query) =>{
       firstAired: extra[0] ? String(extra[0].firstAired).trim() : null,
       score: extra[0] ? extra[0].score : null,
       totalEps: extra[0] ? extra[0].totalEps : null,
-      episodes: extra[0] ? extra[0].episodes : null,
+      // episodes: extra[0] ? extra[0].episodes : null,
     })));
   });
   return await Promise.all(promises)
