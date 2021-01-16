@@ -408,7 +408,7 @@ const getSingleAnimeData = async(id) => {
 
         
 
-        return {episodes, totalEps, score, firstAired, type, status, rating, genres, synopsis, img, title}
+        return {id, title, img, totalEps, score, firstAired, type, status, rating, genres, synopsis, episodes}
 
     })
 }
