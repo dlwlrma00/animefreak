@@ -9,7 +9,7 @@ const axios = require('axios')
 
   // MOST ACCURATE & BYPASS ERROR WHEN UNDEFINED
   const animeContentHandlerv2 = async(id) =>{
-    const res = await fetch(`${url.BASE_URL}/${id}`);
+    const res = await fetch(`${url.BASE_URL}/watch/${id}`);
     const body = await res.text();
     const $ = cheerio.load(body);
     const promises = [];
@@ -42,28 +42,32 @@ const axios = require('axios')
       const type = type_element ? type_element.split(':')[1].trim() : null;
 
       let first_aired_elem = $('span:contains("First Aired :")').parent().text();
-      const firstAired = first_aired_elem ? first_aired_elem.split(':')[1] : null;
+      const firstAired = first_aired_elem ? first_aired_elem.split(':')[1].trim() : null;
 
       let synopsis = unescape($('.animeDetail-top .anime-details').text()).trim()
 
       const score = parseFloat($element.find('div.animeDetail-top div.animeDetailRate div.animeDetailRate-right').text().trim());
       
       let total_eps_el = $element.find('div.container-left div.container-item div.ci-contents div.ci-ct ul.check-list li a').eq(0).attr('href');
-      let totalEps = parseInt(total_eps_el ? total_eps_el.split('/')[6].split('-')[1] : '', 
+      let totalEps = parseInt(total_eps_el ? total_eps_el.split('/')[6].split('-')[1] : 0, 
         10
       );
       try{
         if(totalEps !== totalEps){
           let total_eps_el = $element.find('div.container-left div.container-item div.ci-contents div.ci-ct ul.check-list li a').eq(1).attr('href');
-          totalEps = parseInt(total_eps_el ? total_eps_el.split('/')[6].split('-')[1] : '',
+          totalEps = parseInt(total_eps_el ? total_eps_el.split('/')[6].split('-')[1] : 0,
             10
           );
         }
       }catch(error){
         console.log(error);
       }
-      const animeId = $element.find('div.container-left div.container-item div.ci-contents div.ci-ct ul.check-list li a')
-        .eq(0).attr('href').split('/')[4];
+
+      const animeId = id
+      // $element.find('div.container-left div.container-item div.ci-contents div.ci-ct ul.check-list li a')
+      //   .eq(0).attr('href').split('/')[4];
+
+
       let episodes = Array.from({length: totalEps} , (v , k) =>{
         return{
           id: `${animeId}/episode/episode-${k + 1}`
@@ -71,6 +75,7 @@ const axios = require('axios')
       });
 
       promises.push({
+        id : animeId,
         img: img,
         synopsis : synopsis,
         genres: tempGenres,
@@ -192,22 +197,15 @@ const tv = async(page) =>{
 
   $('div.container div.centerAligner div.container-left div.big-list div.bl-grid').each((index , element) => {
     const $element = $(element);
-    const id = $element.find('div.bl-box a.blb-title').attr('href').slice(26);
+    const id = $element.find('div.bl-box a.blb-title').attr('href').slice(26).replace('watch/', '');
     const title = $element.find('div.bl-box a.blb-title').text().trim();
-    //const img = $element.find('div.bl-box a.blb-image img').attr('src');
-    const genres = [];
-    $element.find('div.bl-box div.bld-right div.details').eq(0).find('a').each((j , el) =>{
-      const $el = $(el);
-      const genre = $el.attr('href').split('/')[5];
-      genres.push(genre);
-    });
-    const synopsis = $element.find('div.bl-box div.bld-right div.details').eq(1).text().replace('Description :' , '').trim();
+    
     promises.push(animeContentHandlerv2(id).then(extra => ({
       id : id ? id.replace('watch/', '') : null,
       title: title ? title : null,
       img: extra[0] ? extra[0].img : null,
-      genres: genres ? genres : null,
-      synopsis: synopsis ? synopsis : null,
+      genres: extra[0]  ? extra[0].genres : [],
+      synopsis: extra[0]  ? extra[0].synopsis : null,
       rating: extra[0] ? extra[0].rating : null,
       status: extra[0] ? extra[0].status : null,
       type: extra[0] ? extra[0].type : null,
@@ -216,6 +214,7 @@ const tv = async(page) =>{
       totalEps: extra[0] ? extra[0].totalEps : null,
       episodes: extra[0] ? extra[0].episodes : null,
     })));
+
   });
   return await Promise.all(promises);
 };
@@ -228,22 +227,15 @@ const ova = async(page) =>{
 
   $('div.container div.centerAligner div.container-left div.big-list div.bl-grid').each((index , element) => {
     const $element = $(element);
-    const id = $element.find('div.bl-box a.blb-title').attr('href').slice(26);
+    const id = $element.find('div.bl-box a.blb-title').attr('href').slice(26).replace('watch/', '');
     const title = $element.find('div.bl-box a.blb-title').text().trim();
-    //const img = $element.find('div.bl-box a.blb-image img').attr('src');
-    const genres = [];
-    $element.find('div.bl-box div.bld-right div.details').eq(0).find('a').each((j , el) =>{
-      const $el = $(el);
-      const genre = $el.attr('href').split('/')[5];
-      genres.push(genre);
-    });
-    const synopsis = $element.find('div.bl-box div.bld-right div.details').eq(1).text().replace('Description :' , '').trim();
+
     promises.push(animeContentHandlerv2(id).then(extra => ({
       id : id ? id.replace('watch/', '') : null,
       title: title ? title : null,
       img: extra[0] ? extra[0].img : null,
-      genres: genres ? genres : null,
-      synopsis: synopsis ? synopsis : null,
+      genres: extra[0] ? extra[0].genres : [],
+      synopsis: extra[0] ? extra[0].synopsis : null,
       rating: extra[0] ? extra[0].rating : null,
       status: extra[0] ? extra[0].status : null,
       type: extra[0] ? extra[0].type : null,
@@ -252,7 +244,9 @@ const ova = async(page) =>{
       totalEps: extra[0] ? extra[0].totalEps : null,
       episodes: extra[0] ? extra[0].episodes : null,
     })));
+
   });
+
   return await Promise.all(promises);
 };
 
@@ -264,22 +258,15 @@ const popular = async() =>{
 
   $('div.main div.container div.centerAligner div.container-left div.big-list div.wide-anime-box').each((index , element) => {
     const $element = $(element);
-    const id = $element.find('a').attr('href').slice(26);
+    const id = $element.find('a').attr('href').slice(26).replace('watch/', '');
     const title = $element.find('div.wab-right h3.wab-title').text().trim();
-    //const img = $element.find('a').attr('style').match(/(https?:\/\/[^ ]*)/)[1].replace(')' , '').trim();
-    //const genres = [];
-    //$('div.wab-links a').each((j , el) =>{
-    //  const $el = $(el);
-    //  const genre = $el.attr('href').split('/')[5];
-    //  genres.push(genre);
-    //});
-    const synopsis = $element.find('div.wab-right div.wab-desc').text().trim();
+
     promises.push(animeContentHandlerv2(id).then(extra => ({
       id : id ? id.replace('watch/', '') : null,
       title: title ? title : null,
       img: extra[0] ? extra[0].img : null,
-      genres: extra[0] ? extra[0].genres : null,
-      synopsis: synopsis ? synopsis : null,
+      genres: extra[0] ? extra[0].genres : [],
+      synopsis: extra[0] ? extra[0].synopsis : null,
       rating: extra[0] ? extra[0].rating : null,
       status: extra[0] ? extra[0].status : null,
       type: extra[0] ? extra[0].type : null,
@@ -300,22 +287,15 @@ const ongoingAnime = async() =>{
 
   $('div.container div.centerAligner div.container-left div.big-list div.bl-grid').each((index , element) => {
     const $element = $(element);
-    const id = $element.find('div.bl-box a.blb-title').attr('href').slice(26);
+    const id = $element.find('div.bl-box a.blb-title').attr('href').slice(26).replace('watch/', '');
     const title = $element.find('div.bl-box a.blb-title').text().trim();
-    //const img = $element.find('div.bl-box a.blb-image img').attr('src');
-    const genres = [];
-    $element.find('div.bl-box div.bld-right div.details').eq(0).find('a').each((j , el) =>{
-      const $el = $(el);
-      const genre = $el.attr('href').split('/')[5];
-      genres.push(genre);
-    });
-    const synopsis = $element.find('div.bl-box div.bld-right div.details').eq(1).text().replace('Description :' , '').trim();
+    
     promises.push(animeContentHandlerv2(id).then(extra => ({
       id : id ? id.replace('watch/', '') : null,
       title: title ? title : null,
       img: extra[0] ? extra[0].img : null,
-      genres: genres ? genres : null,
-      synopsis: synopsis ? synopsis : null,
+      genres: extra[0] ? extra[0].genres : [],
+      synopsis: extra[0] ? extra[0].synopsis : null,
       rating: extra[0] ? extra[0].rating : null,
       status: extra[0] ? extra[0].status : null,
       type: extra[0] ? extra[0].type : null,
@@ -346,71 +326,10 @@ const animeMovieContentHandler = async(id) =>{
 
 const getSingleAnimeData = async(id) => {
 
-    // return animeContentHandler(`watch/${id}`)
-    return axios.get(`${url.DETAILS_URL}/${id}`, {withCredentials: false})
-    .then(async function (response) {
-
-        const $ = cheerio.load(unescape(response.data))
-        
-        let img = $('.animeDetail-top img').attr('src')
-        let title = $('.animeDetail-top .anime-title').text()
-        let synopsis = unescape($('.animeDetail-top .anime-details').text()).trim()
-        let genres = []
-
-        $('div.main div.container').each((index , element) =>{
-          const $element = $(element);
-          $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(1).find('a.blueColor').each((j , el) =>{
-            const $el = $(el);
-            const genre = $el.attr('href').split('/')[5];
-            if(genre){
-              genres.push(genre);
-            }
-          });
-
-          if(typeof genres[0] === 'undefined'){
-            $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(0).find('a.blueColor').each((j , el) =>{
-              const $el = $(el);
-              const genre = $el.attr('href').split('/')[5];
-              if(genre){
-                genres.push(genre);
-              }
-              
-            });
-          }
-        })
-
-        let type = $('span:contains("Type :")').parent().text().split(':')[1].trim();
-        let firstAired = $('span:contains("First Aired :")').parent().text().split(':')[1].trim();
-        let status = $('span:contains("Status :")').parent().text().split(':')[1].trim();
-        let score = parseFloat($('.animeDetail-top .animeDetailRate-right').text().trim())
-        let rating = $('span:contains("Rating :")').parent().text().split(':')[1].trim();
-
-        let totalEps = parseInt($('div.main div.container').find('div.container-left div.container-item div.ci-contents div.ci-ct ul.check-list li a')
-          .eq(0).attr('href').split('/')[6].split('-')[1], 
-          10
-        );
-        try{
-          if(totalEps !== totalEps){
-            totalEps = parseInt($('div.main div.container').find('div.container-left div.container-item div.ci-contents div.ci-ct ul.check-list li a')
-              .eq(1).attr('href').split('/')[6].split('-')[1],
-              10
-            );
-          }
-        }catch(error){
-          console.log(error);
-        }
-
-        let episodes = Array.from({length: totalEps} , (v , k) =>{
-          return{
-            id: `${id}/episode/episode-${k + 1}`
-          }
-        });
-
-        
-
-        return {id, title, img, totalEps, score, firstAired, type, status, rating, genres, synopsis, episodes}
-
+    return animeContentHandlerv2(id).then(result => {
+      return result[0]
     })
+    
 }
 
 // ---------- LATEST EPISODE -----------//
@@ -423,10 +342,11 @@ const getLatestHandler = async(page) =>{
   $('div.container div.container-item div.date-list div.dl-item').each((index , element) =>{
     const $element = $(element);
     const id = $element.find('div.name a').attr('href').slice(32);
-    const contentId = 'watch/' + $element.find('div.name a').attr('href').split('/')[4];
+    const contentId = $element.find('div.name a').attr('href').split('/')[4].replace('watch/', '');
     const title = $element.find('div.name a').text().split('-')[0].trim();
     const episodePublished = $element.find('div.time').text();
     const episode = parseInt($element.find('div.name a').text().split('\n')[1].match(/\d+/) , 10);
+
     promises.push(animeContentHandlerv2(contentId).then(extra => ({
       id : id ? id : null,
       title: title ? title : null,
@@ -475,7 +395,7 @@ const getMovieHandler = async(page) => {
     $('div.container div.centerAligner div.container-left div.big-list div.bl-grid').each((index , element) => {
       try {
         const $element = $(element);
-        const id = $element.find('div.bl-box a.blb-title').attr('href').slice(26);
+        const id = $element.find('div.bl-box a.blb-title').attr('href').slice(26).replace('watch/', '');
         const title = $element.find('div.bl-box a.blb-title').text().trim();
         //const img = $element.find('div.bl-box a.blb-image img').attr('src');
         const genres = [];
