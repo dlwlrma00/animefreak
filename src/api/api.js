@@ -404,6 +404,7 @@ const getMovieHandler = async(page) => {
         const $element = $(element);
         const id = $element.find('div.bl-box a.blb-title').attr('href').slice(26).replace('watch/', '');
         promises.push(animeContentHandlerv2(id).then(extra => ({
+            id : id,
             title: extra[0] ? extra[0].title : null,
             img: extra[0] ? extra[0].img : null,
             genres: extra[0] ? extra[0].genres : [],
@@ -439,8 +440,6 @@ const movies = async(page) =>{
 };
 
 // ---------- ANIME MOVIE END -----------//
-
-
 
 module.exports = {
   animeVideoHandler,
