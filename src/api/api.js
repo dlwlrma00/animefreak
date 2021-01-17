@@ -16,6 +16,7 @@ const axios = require('axios')
 
     $('div.main div.container').each((index , element) =>{
       const $element = $(element);
+      const title = $('.animeDetail-top .anime-title').text()
       const genres = [];
       $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(1).find('a.blueColor').each((j , el) =>{
         const $el = $(el);
@@ -76,6 +77,7 @@ const axios = require('axios')
 
       promises.push({
         id : animeId,
+        title : title,
         img: img,
         synopsis : synopsis,
         genres: tempGenres,
