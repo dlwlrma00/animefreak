@@ -1,4 +1,4 @@
-# **:triangular_flag_on_post: ANIMEFREAK API** (version 1.1.0 [stable])
+# **:triangular_flag_on_post: ANIMEFREAK API** (version 1.1.3 [stable])
 
 ![node version](https://img.shields.io/badge/node->=10.16.x-brightgreen.svg)
 ![npm version](https://img.shields.io/badge/npm->=6.9.x-brightgreen.svg)
@@ -22,7 +22,7 @@
 >Animefreak is a custom API that provides data from the `animefreak.tv` website. You will have access to the entire catalog whether movies, series, current episodes, genres, search content, etc. with English subtitles.
 
 ---
-## :tada: Updates in version v1.1.2 (stable) :tada:
+## :tada: Updates in version v1.1.3 (stable) :tada:
  - [x] Fix bugs on TV & OVA
 
 ## :tada: Updates in version v1.1.0 :tada:
