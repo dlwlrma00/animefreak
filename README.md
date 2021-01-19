@@ -22,7 +22,9 @@
 >Animefreak is a custom API that provides data from the `animefreak.tv` website. You will have access to the entire catalog whether movies, series, current episodes, genres, search content, etc. with English subtitles.
 
 ---
-## :tada: Updates in version v1.1.3 (stable) :tada:
+## :tada: Updates in version v1.1.5 (stable) :tada:
+ - [x] Fix bugs on crawling Movie ID
+## :tada: Updates in version v1.1.3 :tada:
  - [x] Fix bugs on TV & OVA
 
 ## :tada: Updates in version v1.1.0 :tada:
