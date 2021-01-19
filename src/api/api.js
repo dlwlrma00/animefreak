@@ -75,6 +75,7 @@ const axios = require('axios')
                 episodes.push({id : `${$(el).children('a').attr('href').replace('https://www.animefreak.tv/watch/', '').trim()}`})
             })
           }
+          totalEps = episodes.length
 
       }else{
         // FOR TV SERIES ON OVA
