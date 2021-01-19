@@ -7,7 +7,106 @@ const axios = require('axios')
 
 // --------- HANDLER -----------//
 
-  // MOST ACCURATE & BYPASS ERROR WHEN UNDEFINED
+  // MOST ACCURATE & BYPASS ERROR WHEN UNDEFINED & ACCURATE CRAWLING MOVIE ID
+  const animeContentHandlerv3 = async(id) =>{
+    const res = await fetch(`${url.BASE_URL}/watch/${id}`);
+    const body = await res.text();
+    const $ = cheerio.load(body);
+    const promises = [];
+
+    $('div.main div.container').each( async (index , element) =>{
+      const $element = $(element);
+      const animeId = id;
+      const title = $('.animeDetail-top .anime-title').text()
+      const genres = [];
+      $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(1).find('a.blueColor').each((j , el) =>{
+        const $el = $(el);
+        const genre = $el.attr('href').split('/')[5];
+        genres.push(genre);
+      });
+      if(typeof genres[0] === 'undefined'){
+        $element.find('div.animeDetail-top div.animeDetail-tags div.animeDetail-item').eq(0).find('a.blueColor').each((j , el) =>{
+          const $el = $(el);
+          const genre = $el.attr('href') ? $el.attr('href').split('/')[5] : null;
+          genres.push(genre);
+        });
+      }
+      const tempGenres = genres.filter(x => !!x);
+      const img = $element.find('div.animeDetail-top div.animeDetail-image img').attr('src');
+
+      let rating_element = $('span:contains("Rating :")').parent().text();
+      const rating = rating_element ? rating_element.split(':')[1].trim() : null;
+
+      let status_element = $('span:contains("Status :")').parent().text();
+      const status = status_element ? status_element.split(':')[1].trim() : null;
+
+      let type_element = $('span:contains("Type :")').parent().text();
+      const type = type_element ? type_element.split(':')[1].trim() : null;
+
+      let first_aired_elem = $('span:contains("First Aired :")').parent().text();
+      const firstAired = first_aired_elem ? first_aired_elem.split(':')[1].trim() : null;
+
+      let synopsis = unescape($('.animeDetail-top .anime-details').text()).trim()
+
+      const score = parseFloat($element.find('div.animeDetail-top div.animeDetailRate div.animeDetailRate-right').text().trim());
+      
+      let total_eps_el = $element.find('div.container-left div.container-item div.ci-contents div.ci-ct ul.check-list li a').eq(0).attr('href');
+      let totalEps = parseInt(total_eps_el ? total_eps_el.split('/')[6].split('-')[1] : 0, 
+        10
+      );
+      try{
+        if(totalEps !== totalEps){
+          let total_eps_el = $element.find('div.container-left div.container-item div.ci-contents div.ci-ct ul.check-list li a').eq(1).attr('href');
+          totalEps = parseInt(total_eps_el ? total_eps_el.split('/')[6].split('-')[1] : 0, 10);
+        }
+      }catch(error){
+        console.log(error);
+      }
+
+      let episodes = []
+      if(type === 'Movie'){
+        
+          $('.ci-contents :nth-child(2) > ul').children('li').each( async (i, el) => {
+              episodes.push({id : `${$(el).children('a').attr('href').replace('https://www.animefreak.tv/watch/', '').trim()}`})
+          })
+
+          if(episodes.length <= 0){
+            $('.ci-contents :nth-child(1) > ul').children('li').each( async (i, el) => {
+                episodes.push({id : `${$(el).children('a').attr('href').replace('https://www.animefreak.tv/watch/', '').trim()}`})
+            })
+          }
+
+      }else{
+        // FOR TV SERIES ON OVA
+        episodes = Array.from({length: totalEps} , (v , k) =>{
+          return{
+            id: `${animeId}/episode/episode-${k + 1}`
+          }
+        });
+      }
+
+      
+
+      promises.push({
+        id : animeId,
+        title : title,
+        img: img,
+        synopsis : synopsis,
+        genres: tempGenres,
+        rating: rating,
+        status: status,
+        type: type,
+        firstAired: firstAired,
+        score: score,
+        totalEps: totalEps,
+        episodes: episodes,
+      });
+
+    });
+    return await Promise.all(promises);
+  };
+
+  // ACCURATE & BYPASS ERROR WHEN UNDEFINED
   const animeContentHandlerv2 = async(id) =>{
     const res = await fetch(`${url.BASE_URL}/watch/${id}`);
     const body = await res.text();
@@ -134,7 +233,7 @@ const search = async(query) =>{
     const id = `watch/${doc.seo_name}`;
     const title = doc.name;
 
-    promises.push(animeContentHandlerv2(id).then(extra => ({
+    promises.push(animeContentHandlerv3(id).then(extra => ({
       id : id ? id.replace('watch/', '') : null,
       title: title ? title : null,
       img: extra[0] ? extra[0].img : null,
@@ -173,7 +272,7 @@ const genres = async(genre , page) =>{
       genres.push(genre);
     });
     const synopsis = $element.find('div.bl-box div.bld-right div.details').eq(1).text().replace('Description :' , '').trim();
-    promises.push(animeContentHandlerv2(id).then(extra => ({
+    promises.push(animeContentHandlerv3(id).then(extra => ({
       id : id ? id.replace('watch/', '') : null,
       title: title ? title : null,
       img: extra[0] ? extra[0].img : null,
@@ -202,7 +301,7 @@ const tv = async(page) =>{
     const id = $element.find('div.bl-box a.blb-title').attr('href').slice(26).replace('watch/', '');
     const title = $element.find('div.bl-box a.blb-title').text().trim();
     
-    promises.push(animeContentHandlerv2(id).then(extra => ({
+    promises.push(animeContentHandlerv3(id).then(extra => ({
       id : id ? id.replace('watch/', '') : null,
       title: title ? title : null,
       img: extra[0] ? extra[0].img : null,
@@ -232,7 +331,7 @@ const ova = async(page) =>{
     const id = $element.find('div.bl-box a.blb-title').attr('href').slice(26).replace('watch/', '');
     const title = $element.find('div.bl-box a.blb-title').text().trim();
 
-    promises.push(animeContentHandlerv2(id).then(extra => ({
+    promises.push(animeContentHandlerv3(id).then(extra => ({
       id : id ? id.replace('watch/', '') : null,
       title: title ? title : null,
       img: extra[0] ? extra[0].img : null,
@@ -263,7 +362,7 @@ const popular = async() =>{
     const id = $element.find('a').attr('href').slice(26).replace('watch/', '');
     const title = $element.find('div.wab-right h3.wab-title').text().trim();
 
-    promises.push(animeContentHandlerv2(id).then(extra => ({
+    promises.push(animeContentHandlerv3(id).then(extra => ({
       id : id ? id.replace('watch/', '') : null,
       title: title ? title : null,
       img: extra[0] ? extra[0].img : null,
@@ -292,7 +391,7 @@ const ongoingAnime = async() =>{
     const id = $element.find('div.bl-box a.blb-title').attr('href').slice(26).replace('watch/', '');
     const title = $element.find('div.bl-box a.blb-title').text().trim();
     
-    promises.push(animeContentHandlerv2(id).then(extra => ({
+    promises.push(animeContentHandlerv3(id).then(extra => ({
       id : id ? id.replace('watch/', '') : null,
       title: title ? title : null,
       img: extra[0] ? extra[0].img : null,
@@ -312,7 +411,7 @@ const ongoingAnime = async() =>{
 
 const getSingleAnimeData = async(id) => {
 
-    return animeContentHandlerv2(id).then(result => {
+    return animeContentHandlerv3(id).then(result => {
       return result[0]
     })
     
@@ -333,7 +432,7 @@ const getLatestHandler = async(page) =>{
     const episodePublished = $element.find('div.time').text();
     const episode = parseInt($element.find('div.name a').text().split('\n')[1].match(/\d+/) , 10);
 
-    promises.push(animeContentHandlerv2(contentId).then(extra => ({
+    promises.push(animeContentHandlerv3(contentId).then(extra => ({
       id : id ? id : null,
       title: title ? title : null,
       episode: episode ? episode : null,
@@ -403,7 +502,7 @@ const getMovieHandler = async(page) => {
 
         const $element = $(element);
         const id = $element.find('div.bl-box a.blb-title').attr('href').slice(26).replace('watch/', '');
-        promises.push(animeContentHandlerv2(id).then(extra => ({
+        promises.push(animeContentHandlerv3(id).then(extra => ({
             id : id,
             title: extra[0] ? extra[0].title : null,
             img: extra[0] ? extra[0].img : null,
