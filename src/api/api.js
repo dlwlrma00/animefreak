@@ -67,12 +67,12 @@ const axios = require('axios')
       if(type === 'Movie'){
         
           $('.ci-contents :nth-child(2) > ul').children('li').each( async (i, el) => {
-              episodes.push({id : `${$(el).children('a').attr('href').replace('https://www.animefreak.tv/watch/', '').trim()}`})
+              await episodes.push({id : `${$(el).children('a').attr('href').replace('https://www.animefreak.tv/watch/', '').trim()}`})
           })
 
           if(episodes.length <= 0){
             $('.ci-contents :nth-child(1) > ul').children('li').each( async (i, el) => {
-                episodes.push({id : `${$(el).children('a').attr('href').replace('https://www.animefreak.tv/watch/', '').trim()}`})
+                await episodes.push({id : `${$(el).children('a').attr('href').replace('https://www.animefreak.tv/watch/', '').trim()}`})
             })
           }
           totalEps = episodes.length
