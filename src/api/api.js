@@ -51,6 +51,7 @@ const axios = require('axios')
       const score = parseFloat($element.find('div.animeDetail-top div.animeDetailRate div.animeDetailRate-right').text().trim());
       
       let total_eps_el = $element.find('div.container-left div.container-item div.ci-contents div.ci-ct ul.check-list li a').eq(0).attr('href');
+      
       let totalEps = parseInt(total_eps_el ? total_eps_el.split('/')[6].split('-')[1] : 0, 
         10
       );
@@ -67,21 +68,31 @@ const axios = require('axios')
       if(type === 'Movie'){
         
           $('.ci-contents :nth-child(2) > ul').children('li').each( async (i, el) => {
-              await episodes.push({id : `${$(el).children('a').attr('href').replace('https://www.animefreak.tv/watch/', '').trim()}`})
+              let epId = $(el).children('a').attr('href').replace('https://www.animefreak.tv/watch/', '').trim()
+              let movie_num = epId.split('/')[2] ? epId.split('/')[2].match(/\d/g) : 101010101010101010101
+              movie_num = movie_num.join("");
+
+              await episodes.push({id : epId, movie_num : movie_num})
           })
 
           if(episodes.length <= 0){
             $('.ci-contents :nth-child(1) > ul').children('li').each( async (i, el) => {
-                await episodes.push({id : `${$(el).children('a').attr('href').replace('https://www.animefreak.tv/watch/', '').trim()}`})
+              let epId = $(el).children('a').attr('href').replace('https://www.animefreak.tv/watch/', '').trim()
+              let movie_num = epId.split('/')[2] ? epId.split('/')[2].match(/\d/g) : 101010101010101010101
+              movie_num = movie_num.join("");
+              
+              await episodes.push({id : epId, movie_num : movie_num})
             })
           }
+
           totalEps = episodes.length
 
       }else{
         // FOR TV SERIES ON OVA
         episodes = Array.from({length: totalEps} , (v , k) =>{
           return{
-            id: `${animeId}/episode/episode-${k + 1}`
+            id: `${animeId}/episode/episode-${k + 1}`,
+            episode_num : k + 1
           }
         });
       }
