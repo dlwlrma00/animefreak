@@ -429,14 +429,14 @@ const getLatestHandler = async(page) =>{
     const id = $element.find('div.name a').attr('href').slice(32);
     const contentId = $element.find('div.name a').attr('href').split('/')[4].replace('watch/', '');
     const title = $element.find('div.name a').text().split('-')[0].trim();
-    const episodePublished = $element.find('div.time').text();
+    const release_date = $element.find('div.time').text();
     const episode = parseInt($element.find('div.name a').text().split('\n')[1].match(/\d+/) , 10);
 
     promises.push(animeContentHandlerv3(contentId).then(extra => ({
       id : id ? id : null,
       title: title ? title : null,
       episode: episode ? episode : null,
-      episodePublished: episodePublished ? episodePublished: null,
+      release_date: release_date ? release_date: null,
       img: extra[0] ? extra[0].img : null,
       type: extra[0] ? extra[0].type : null,
       firstAired: extra[0] ? String(extra[0].firstAired).trim() : null,
