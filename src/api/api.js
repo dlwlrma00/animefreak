@@ -66,11 +66,11 @@ const axios = require('axios')
 
       let episodes = []
       if(type === 'Movie'){
-        
+
           $('.ci-contents :nth-child(2) > ul').children('li').each( async (i, el) => {
               let epId = $(el).children('a').attr('href').replace('https://www.animefreak.tv/watch/', '').trim()
               let movie_num = epId.split('/')[2] ? epId.split('/')[2].match(/\d/g) : 101010101010101010101
-              movie_num = movie_num.join("");
+              movie_num = movie_num ? movie_num.join("") : 1;
 
               await episodes.push({id : epId, movie_num : movie_num})
           })
@@ -79,7 +79,7 @@ const axios = require('axios')
             $('.ci-contents :nth-child(1) > ul').children('li').each( async (i, el) => {
               let epId = $(el).children('a').attr('href').replace('https://www.animefreak.tv/watch/', '').trim()
               let movie_num = epId.split('/')[2] ? epId.split('/')[2].match(/\d/g) : 101010101010101010101
-              movie_num = movie_num.join("");
+              movie_num = movie_num ? movie_num.join("") : 1;
               
               await episodes.push({id : epId, movie_num : movie_num})
             })
