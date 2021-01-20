@@ -57,13 +57,15 @@ const _ = require('underscore');
           let epId = $(el).children('a').attr('href').replace('https://www.animefreak.tv/watch/', '').trim()
           let epTitle = $(el).children('a').text().trim()
 
-          const ep_num =  epId.split('/')[2] ? epId.split('/')[2].split('-').pop() : 0 ;
+          let ep_num =  epId.split('/')[2] ? epId.split('/')[2].split('-').pop() : 0 ;
+          let pub_date = $(el).text().split('Released on')[1].trim();
 
           if(type === 'Movie'){
-            await episodes.push({id : epId, movie_num : parseInt(ep_num), part_title : epTitle})
+            await episodes.push({id : epId, movie_num : parseInt(ep_num), part_title : epTitle, release_date : pub_date})
           }else{
-            await episodes.push({id : epId, episode_title : epTitle, episode_num : parseInt(ep_num)})
+            await episodes.push({id : epId, episode_title : epTitle, episode_num : parseInt(ep_num), release_date : pub_date})
           }
+
       })
 
       if(episodes.length <= 0){
@@ -72,12 +74,13 @@ const _ = require('underscore');
             let epId = $(el).children('a').attr('href').replace('https://www.animefreak.tv/watch/', '').trim()
             let epTitle = $(el).children('a').text().trim()
 
-            const ep_num =  epId.split('/')[2] ? epId.split('/')[2].split('-').pop() : 0 ;
+            let ep_num =  epId.split('/')[2] ? epId.split('/')[2].split('-').pop() : 0 ;
+            let pub_date = $(el).text().split('Released on')[1].trim();
 
             if(type === 'Movie'){
-              await episodes.push({id : epId, movie_num : parseInt(ep_num), part_title : epTitle})
+              await episodes.push({id : epId, movie_num : parseInt(ep_num), part_title : epTitle, release_date : pub_date})
             }else{
-              await episodes.push({id : epId, episode_title : epTitle, episode_num : parseInt(ep_num)})
+              await episodes.push({id : epId, episode_title : epTitle, episode_num : parseInt(ep_num), release_date : pub_date})
             }
         })
       }
