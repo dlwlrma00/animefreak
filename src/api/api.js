@@ -4,20 +4,15 @@ const url = require('./urls');
 const util = require('../utils');
 const axios = require('axios')
 const _ = require('underscore');
-const AbortController =  require('node-abort-controller')
-const controller = new AbortController()
-const { signal } = controller;
 
 // --------- HANDLER -----------//
 
   // MOST ACCURATE & BYPASS ERROR WHEN UNDEFINED & ACCURATE CRAWLING MOVIE ID
   const animeContentHandlerv3 = async(id) =>{
-    const res = await fetch(`${url.BASE_URL}/watch/${id}`, {signal});
+    let res = await fetch(`${url.BASE_URL}/watch/${id}`).then(result=> {return result}).catch(e => {console.log('ERROR OF FETCH ', e.message)})
     const body = await res.text();
     const $ = cheerio.load(body);
     const promises = [];
-    
-    controller.abort();
 
     $('div.main div.container').each( async (index , element) =>{
       
@@ -51,6 +46,11 @@ const { signal } = controller;
 
       let first_aired_elem = $('span:contains("First Aired :")').parent().text();
       const firstAired = first_aired_elem ? first_aired_elem.split(':')[1].trim() : null;
+
+      let synonyms_elem = $('span:contains("Synonyms :")').parent().text();
+      let synonyms_raw = synonyms_elem ? synonyms_elem.split(':')[1].trim() : null;
+      let temp_synonyms = synonyms_raw ? synonyms_raw.split(',') : []
+      const synonyms = _.map(temp_synonyms, function(item){return item.trim()})
 
       let synopsis = unescape($('.animeDetail-top .anime-details').text()).trim()
 
@@ -96,6 +96,7 @@ const { signal } = controller;
       promises.push({
         id : animeId,
         title : title,
+        synonyms : synonyms,
         img: img,
         synopsis : synopsis,
         genres: tempGenres,
@@ -109,6 +110,7 @@ const { signal } = controller;
       });
 
     });
+    
     return await Promise.all(promises);
   };
 
