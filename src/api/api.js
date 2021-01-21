@@ -4,17 +4,23 @@ const url = require('./urls');
 const util = require('../utils');
 const axios = require('axios')
 const _ = require('underscore');
+const AbortController =  require('node-abort-controller')
+const controller = new AbortController()
+const { signal } = controller;
 
 // --------- HANDLER -----------//
 
   // MOST ACCURATE & BYPASS ERROR WHEN UNDEFINED & ACCURATE CRAWLING MOVIE ID
   const animeContentHandlerv3 = async(id) =>{
-    const res = await fetch(`${url.BASE_URL}/watch/${id}`);
+    const res = await fetch(`${url.BASE_URL}/watch/${id}`, {signal});
     const body = await res.text();
     const $ = cheerio.load(body);
     const promises = [];
+    
+    controller.abort();
 
     $('div.main div.container').each( async (index , element) =>{
+      
       const $element = $(element);
       const animeId = id;
       const title = $('.animeDetail-top .anime-title').text()
@@ -448,6 +454,8 @@ const getLatestHandler = async(page) =>{
       video: extra[0] ? extra[0] : null
     })));
   });
+
+
   return await Promise.all(promises)
 };
 
