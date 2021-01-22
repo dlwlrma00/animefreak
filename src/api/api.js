@@ -66,6 +66,22 @@ const _ = require('underscore');
           let ep_num =  epId.split('/')[2] ? epId.split('/')[2].split('-').pop() : 0 ;
           let pub_date = $(el).text().split('Released on')[1].trim();
 
+          let temp_epnum = null
+          if(!hasNumbers(ep_num)){  
+              if(epId.split('/')[2]){
+                await new Promise(async (resolve, reject) => {
+                  await Promise.all(epId.split('/')[2].split('-').map((item) => {
+                      if(hasNumbers(item)){
+                        if(!hasNumbers(ep_num)){
+                          ep_num = item;
+                          resolve();
+                        }
+                      }
+                  }))
+                })  
+              }
+          }
+
           if(type === 'Movie'){
             await episodes.push({id : epId, movie_num : parseInt(ep_num), part_title : epTitle, release_date : pub_date})
           }else{
@@ -113,6 +129,11 @@ const _ = require('underscore');
     
     return await Promise.all(promises);
   };
+
+  function hasNumbers(t){
+    var regex = /\d/g;
+    return regex.test(t);
+  } 
 
   // ACCURATE & BYPASS ERROR WHEN UNDEFINED
   const animeContentHandlerv2 = async(id) =>{
